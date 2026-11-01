@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | NEXUS AI</title>
+
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+</head>
+
+<body class="auth-page">
+    <button
+        class="theme-toggle auth-theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-label="Switch to light theme"
+        title="Switch to light theme"
+    >
+        <span class="theme-icon" id="themeIcon" aria-hidden="true">☀</span>
+        <span id="themeLabel">Light</span>
+    </button>
+
+    <main class="auth-card">
+        <a class="auth-brand" href="{{ url_for('login') }}">
+            <span class="brand-icon" aria-hidden="true">✦</span>
+            <span>NEXUS AI</span>
+        </a>
+        <p class="auth-eyebrow">YOUR PERSONAL AI WORKSPACE</p>
+        <h1>Create your account</h1>
+        <p class="auth-description">A fresh space for your ideas starts here.</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="auth-message" role="status">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('signup') }}">
+            <label for="username">Username</label>
+            <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="How should we call you?"
+                maxlength="50"
+                autocomplete="username"
+                required
+            >
+
+            <label for="email">Email</label>
+            <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="At least 8 characters"
+                minlength="8"
+                autocomplete="new-password"
+                required
+            >
+
+            <button class="auth-submit" type="submit">Create account</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log in</a>
+        </p>
+    </main>
+</body>
+</html>

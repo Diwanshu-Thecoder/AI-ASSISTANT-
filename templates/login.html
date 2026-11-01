@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | NEXUS AI</title>
+
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+</head>
+
+<body class="auth-page">
+    <button
+        class="theme-toggle auth-theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-label="Switch to light theme"
+        title="Switch to light theme"
+    >
+        <span class="theme-icon" id="themeIcon" aria-hidden="true">☀</span>
+        <span id="themeLabel">Light</span>
+    </button>
+
+    <main class="auth-card">
+        <a class="auth-brand" href="{{ url_for('login') }}">
+            <span class="brand-icon" aria-hidden="true">✦</span>
+            <span>NEXUS AI</span>
+        </a>
+        <p class="auth-eyebrow">YOUR PERSONAL AI WORKSPACE</p>
+        <h1>Welcome back</h1>
+        <p class="auth-description">Log in to pick up where you left off.</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="auth-message" role="status">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <label for="email">Email</label>
+            <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button class="auth-submit" type="submit">Log in</button>
+        </form>
+
+        <p class="auth-switch">
+            Don’t have an account?
+            <a href="{{ url_for('signup') }}">Create one</a>
+        </p>
+    </main>
+</body>
+</html>

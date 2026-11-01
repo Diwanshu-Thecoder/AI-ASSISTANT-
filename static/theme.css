@@ -1,0 +1,74 @@
+:root {
+    color-scheme: light;
+    --background: #f7f8fc;
+    --surface: #ffffff;
+    --sidebar: #ffffff;
+    --text: #202235;
+    --muted: #85889b;
+    --border: #e9eaf2;
+    --accent: #6c63ff;
+    --accent-light: #f0efff;
+    --hover: #f7f7fc;
+    --nav-text: #70738a;
+    --input: #ffffff;
+    --input-border: #dedfeb;
+    --model-bg: #f1f0ff;
+    --model-text: #6559e8;
+    --user-bubble: #efedff;
+    --code-bg: #202235;
+    --gmail-bg: #fbfaff;
+    --gmail-button-bg: #f0edff;
+    --gmail-button-text: #6252d8;
+    --shadow: #34345408;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --background: #0e1018;
+    --surface: #131620;
+    --sidebar: #11131c;
+    --text: #f4f3fa;
+    --muted: #85899d;
+    --border: #262938;
+    --accent: #9a82ff;
+    --accent-light: #242135;
+    --hover: #1b1d28;
+    --nav-text: #9699aa;
+    --input: #171822;
+    --input-border: #353244;
+    --model-bg: #191b26;
+    --model-text: #bbbdca;
+    --user-bubble: #242137;
+    --code-bg: #0b0c12;
+    --gmail-bg: #191826;
+    --gmail-button-bg: #28253d;
+    --gmail-button-text: #c7bbff;
+    --shadow: #08080d60;
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+    background: var(--hover);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}

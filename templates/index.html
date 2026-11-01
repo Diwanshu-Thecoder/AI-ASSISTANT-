@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NEXUS AI | Personal Assistant</title>
+
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='theme.css') }}"
+    >
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <!-- Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Sanitize generated HTML before displaying it -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">✦</div>
+            <span>NEXUS AI</span>
+        </div>
+
+        <button class="new-chat" id="newChatBtn">
+            <span>＋</span> New Chat
+        </button>
+
+        <p class="section-label">YOUR ASSISTANT</p>
+
+        <nav class="navigation">
+
+            <button class="nav-item active" data-mode="chat">
+                <span class="nav-icon">◈</span>
+                General Chat
+            </button>
+
+            <button class="nav-item" data-mode="summarizer">
+                <span class="nav-icon">▤</span>
+                Summarizer
+            </button>
+
+            <button class="nav-item" data-mode="coding">
+                <span class="nav-icon">&lt;/&gt;</span>
+                Coding Assistant
+            </button>
+
+            <button class="nav-item" data-mode="study">
+                <span class="nav-icon">⌘</span>
+                Study Assistant
+            </button>
+
+            <button class="nav-item" data-view="email-summary">
+                <span class="nav-icon" aria-hidden="true">✉</span>
+                Email Summaries
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <!-- Current User and Logout Section -->
+            <div class="user-profile">
+            <div class="user-avatar">
+        {{ session.get("username", "User")[0]|upper }}
+            </div>
+
+            <div class="user-details">
+            <div class="username">
+            {{ session.get("username", "User") }}
+            </div>
+
+        <div class="user-id">
+            User ID: {{ session.get("user_id", "N/A") }}
+        </div>
+    </div>
+
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" class="logout-button" title="Log out">
+            Logout
+        </button>
+    </form>
+</div>
+
+            <div class="status-dot"></div>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <button id="menuBtn" class="menu-btn" aria-label="Toggle sidebar">
+                ☰
+            </button>
+
+            <div class="breadcrumb">
+                <span>Workspace</span>
+                <span class="breadcrumb-separator">/</span>
+                <strong id="currentMode">General Chat</strong>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="model-badge">
+                    <span class="status-dot"></span>
+                    Gemini AI
+                </div>
+
+                <button
+                    class="theme-toggle"
+                    id="themeToggle"
+                    type="button"
+                    aria-label="Switch to light theme"
+                    title="Switch to light theme"
+                >
+                    <span class="theme-icon" id="themeIcon" aria-hidden="true">☀</span>
+                    <span id="themeLabel">Light</span>
+                </button>
+            </div>
+
+        </header>
+
+
+        <!-- Chat Area -->
+        <section class="chat-area" id="chatArea">
+
+            <div class="welcome-screen" id="welcomeScreen">
+
+                <p class="eyebrow"><span aria-hidden="true">✧</span> YOUR AI, READY WHEN YOU ARE</p>
+
+                <h1 id="welcomeTitle">
+                    Make room for<br><span class="headline-accent">what’s next.</span>
+                </h1>
+
+                <p class="welcome-description" id="welcomeDescription">
+                    A thought, a question, a half-formed idea.<br>
+                    Start anywhere — we’ll figure it out together.
+                </p>
+
+                <div class="suggestion-grid" id="suggestionGrid">
+
+                    <button class="suggestion-card"
+                            data-prompt="Explain machine learning in simple words with an example.">
+
+                        <span class="suggestion-icon purple">✧</span>
+
+                        <span>
+                            <strong>Explore an idea</strong>
+                            <small>Think it through, together</small>
+                        </span>
+
+                        <span class="card-arrow">↗</span>
+                    </button>
+
+
+                    <button class="suggestion-card"
+                            data-prompt="Summarize the following text into five important bullet points:">
+
+                        <span class="suggestion-icon blue">▤</span>
+
+                        <span>
+                            <strong>Find the signal</strong>
+                            <small>Summarize what matters</small>
+                        </span>
+
+                        <span class="card-arrow">↗</span>
+                    </button>
+
+
+                    <button class="suggestion-card"
+                            data-prompt="Explain this Python code and help me understand how it works:">
+
+                        <span class="suggestion-icon green">&lt;/&gt;</span>
+
+                        <span>
+                            <strong>Build something</strong>
+                            <small>From bug to breakthrough</small>
+                        </span>
+
+                        <span class="card-arrow">↗</span>
+                    </button>
+
+
+                    <button class="suggestion-card"
+                            data-prompt="Help me create a practical study plan for learning a new technical subject.">
+
+                        <span class="suggestion-icon orange">⌘</span>
+
+                        <span>
+                            <strong>Learn with focus</strong>
+                            <small>Make a tricky topic click</small>
+                        </span>
+
+                        <span class="card-arrow">↗</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Messages appear here -->
+            <div id="messages" class="messages"></div>
+
+        </section>
+
+        <section class="email-summary-view" id="emailSummarySection" hidden>
+            <div class="email-summary-content">
+                <p class="eyebrow">YOUR INBOX, AT A GLANCE</p>
+                <h1>Email Summaries</h1>
+                <p class="email-summary-description">
+                    Connect Gmail to get a concise digest of recent messages,
+                    important deadlines, and action items.
+                </p>
+
+                <div class="gmail-panel">
+                    <p class="section-label">GMAIL</p>
+                    <p class="gmail-description">
+                        NEXUS AI reads up to 10 emails from the last 14 days.
+                    </p>
+                    <a class="gmail-connect" href="{{ url_for('gmail_connect') }}">
+                        Connect Gmail <span aria-hidden="true">↗</span>
+                    </a>
+                    <button class="gmail-action" id="summarizeGmailBtn" type="button">
+                        Summarize Recent Emails
+                    </button>
+                    <form action="{{ url_for('gmail_disconnect') }}" method="POST">
+                        <button class="gmail-disconnect" type="submit">
+                            Disconnect Gmail
+                        </button>
+                    </form>
+                    <div class="gmail-status" id="gmailSummaryStatus" role="status"></div>
+                    <div class="gmail-result" id="gmailSummaryResult"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Input Area -->
+        <footer class="input-section">
+
+            <form id="chatForm" class="chat-form">
+
+                <textarea
+                    id="messageInput"
+                    rows="1"
+                    placeholder="Message your AI assistant or attach a file..."
+                    aria-label="Your message"
+                ></textarea>
+
+                <div class="attachment-list" id="attachmentList" aria-live="polite"></div>
+
+                <div class="input-bottom">
+
+                    <div class="input-tools">
+                        <input
+                            id="fileInput"
+                            type="file"
+                            accept=".png,.jpg,.jpeg,.webp,.pdf,.txt,.md,.csv"
+                            multiple
+                            hidden
+                        >
+                        <button
+                            class="attach-button"
+                            id="attachFileBtn"
+                            type="button"
+                            aria-label="Attach files"
+                            title="Attach images or documents"
+                        >＋ Attach</button>
+                        <span class="input-hint">
+                            Images, PDF, TXT, MD, CSV · Up to 5 files, 10 MB total
+                        </span>
+                    </div>
+
+                    <button type="submit" id="sendBtn" aria-label="Send message">
+                        <span>↑</span>
+                    </button>
+
+                </div>
+
+            </form>
+
+            <p class="disclaimer">
+                AI can make mistakes. Verify important information.
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+{% with notices = get_flashed_messages(with_categories=true, category_filter=["email-success", "email-info", "email-error"]) %}
+    {% if notices %}
+        <div class="email-notifications" aria-live="polite" aria-relevant="additions">
+            {% for category, message in notices %}
+                <div
+                    class="email-notification {{ category }}"
+                    role="{{ 'alert' if category == 'email-error' else 'status' }}"
+                >
+                    <span class="email-notification-icon" aria-hidden="true">
+                        {{ "✓" if category == "email-success" else ("!" if category == "email-error" else "i") }}
+                    </span>
+                    <p>{{ message }}</p>
+                    <button class="email-notification-close" type="button" aria-label="Dismiss notification">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+document.getElementById("summarizeGmailBtn")?.addEventListener("click", async () => {
+    const status = document.getElementById("gmailSummaryStatus");
+    const result = document.getElementById("gmailSummaryResult");
+    const button = document.getElementById("summarizeGmailBtn");
+    status.textContent = "Reading recent emails and preparing summary...";
+    result.textContent = "";
+    button.disabled = true;
+    try {
+        const response = await fetch("{{ url_for('gmail_summarize') }}", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({})
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not summarize emails.");
+        result.textContent = data.summary || "No summary returned.";
+        status.textContent = "Summary ready. Up to 10 emails from the last 14 days were checked.";
+    } catch (error) {
+        status.textContent = error.message || "Something went wrong.";
+    } finally {
+        button.disabled = false;
+    }
+});
+
+document.querySelectorAll(".email-notification").forEach(notification => {
+    let dismissTimer;
+    const dismiss = () => {
+        notification.classList.add("is-dismissing");
+        notification.addEventListener("transitionend", () => notification.remove(), {once: true});
+        window.setTimeout(() => notification.remove(), 300);
+    };
+
+    notification.querySelector(".email-notification-close").addEventListener("click", () => {
+        window.clearTimeout(dismissTimer);
+        dismiss();
+    });
+
+    dismissTimer = window.setTimeout(dismiss, 8000);
+});
+</script>
+
+</body>
+</html>
